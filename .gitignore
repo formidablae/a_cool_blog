@@ -15,3 +15,5 @@ Homestead.yaml
 private/tmp
 
 /tmp
+
+.DS_Store
