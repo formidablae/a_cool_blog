@@ -1,0 +1,17 @@
+/vendor
+/.idea
+Homestead.json
+Homestead.yaml
+
+.env*
+!.env.example
+
+.phpunit.result.cache
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+
+private/tmp
+
+/tmp

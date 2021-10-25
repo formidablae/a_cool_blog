@@ -1,0 +1,10 @@
+{
+    "phpunit.phpunit": "/var/www/html/vendor/bin/phpunit",
+    "phpunit.command": "docker-compose run --rm a-lumen-blog-backend",
+    "phpunit.paths": {
+        "${workspaceFolder}": "/var/www/html"
+    },
+    "phpunit.args": [
+        "--coverage-html /tmp"
+    ]
+}
