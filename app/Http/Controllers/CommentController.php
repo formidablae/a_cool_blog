@@ -15,6 +15,13 @@ class CommentController extends BaseController {
     }
 
     /**
+    * getter of all comments
+    */
+   public function getAllComments() {
+       return Comment::all();
+   }
+
+    /**
      * getter of all comments of a given post
      */
     public function getAllCommentsOfAPost($post_id) {
@@ -31,19 +38,19 @@ class CommentController extends BaseController {
     /**
      * create a new comment
      */
-    public function newComment(Request $request) {
+    public function newComment(Request $request, $user_id, $post_id) {
         $comment = new Comment;
         $comment->fill($request->all());
-        $comment->user_id = $request["user_id"];
-        $comment->post_id = $request["post_id"];
+        $comment->user_id = $user_id;
+        $comment->post_id = $post_id;
         $comment->save();
     }
 
     /**
      * edit a comment
      */
-    public function editComment(Request $request) {
-        $comment = $this->getComment($request["id"]);  // id of comment
+    public function editComment(Request $request, $comment_id) {
+        $comment = $this->getComment($comment_id);
         $comment->fill($request->all());
         $comment->save();
     }

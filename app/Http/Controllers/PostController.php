@@ -31,18 +31,18 @@ class PostController extends BaseController {
     /**
      * create a new post
      */
-    public function newPost(Request $request) {
+    public function newPost(Request $request, $user_id) {
         $post = new Post;
         $post->fill($request->all());
-        $post->user_id = $request["user_id"];
+        $post->user_id = $user_id;
         $post->save();
     }
 
     /**
      * edit a post
      */
-    public function editPost(Request $request) {
-        $post = $this->getPost($request["id"]);  // id of post
+    public function editPost(Request $request, $post_id) {
+        $post = $this->getPost($post_id);
         $post->fill($request->all());
         $post->save();
     }

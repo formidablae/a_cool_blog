@@ -15,6 +15,13 @@ class UserController extends BaseController {
     }
 
     /**
+     * getter of all users
+     */
+    public function getAllUsers() {
+        return User::all();
+    }
+
+    /**
      * create a new user
      */
     public function newUser(Request $request) {
