@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-//use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model {
-    //use HasFactory;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -14,7 +14,7 @@ class Post extends Model {
      * @var array
      */
     protected $fillable = [
-        'text', 'title'
+        'content', 'title'
     ];
 
     /**
@@ -34,14 +34,14 @@ class Post extends Model {
     protected $guarded = [
         'id', 'user_id', 'created_at'
     ];
+
     protected $table = 'posts';
 
     /**
      * relationships
      */
     public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany {
-        //return $this->hasMany(Comment::class, 'comment_id');
-        return $this->hasMany(Comment::class, 'post_id');
+        return $this->hasMany(Comment::class, 'post_id', 'id');
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo {

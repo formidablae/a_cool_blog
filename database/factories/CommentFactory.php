@@ -19,12 +19,7 @@ class CommentFactory extends Factory {
      *
      * @return array
      */
-    public function definition()
-    {
-        return [
-            'text' => $this->faker->text(200),
-            'user_id' => null,
-            'post_id' => null
-        ];
+    public function definition() {
+        return ['content' => $this->faker->text(200)];
     }
 }

@@ -23,8 +23,7 @@ class PostFactory extends Factory {
     {
         return [
             'title' => $this->faker->text(30),
-            'text' => $this->faker->text(500),
-            'user_id' => null
+            'content' => $this->faker->text(500)
         ];
     }
 }
