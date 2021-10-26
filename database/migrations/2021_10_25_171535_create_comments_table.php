@@ -14,7 +14,7 @@ class CreateCommentsTable extends Migration
     public function up()
     {
         Schema::create('comments', function (Blueprint $table) {
-            $table->id();  // automatically increments id of type unsigned integer, unique
+            $table->increments('id');  // automatically increments id of type unsigned integer, unique
             $table->unsignedInteger('user_id');  // creates a column for user_id unsigned integers
             $table->foreign('user_id')->references('id')->on('users');  // makes user_id a foreign key to id of the users table
             $table->unsignedInteger('post_id');  // creates a column for post_id unsigned integers

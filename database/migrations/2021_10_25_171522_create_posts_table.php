@@ -14,7 +14,7 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->id();  // automatically increments id of type unsigned integer, unique
+            $table->increments('id');  // automatically increments id of type unsigned integer, unique
             $table->unsignedInteger('user_id');  // creates a column for user_id unsigned integers
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');  // makes user_id a foreign key to id of the users table
             $table->string('title');  // post's title
