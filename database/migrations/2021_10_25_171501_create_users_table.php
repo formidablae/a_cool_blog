@@ -14,7 +14,7 @@ class CreateUsersTable extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');  // automatically increments id of type unsigned integer, equivalent of a primary key
+            $table->id();  // automatically increments id of type unsigned integer, equivalent of a primary key
             $table->string('first_name')->nullable();  // user's first name column, null by default
             $table->string('last_name')->nullable();  // user's last name column, null by default
             $table->string('email');  // column for email address. todo: validate the address is a valid one.
