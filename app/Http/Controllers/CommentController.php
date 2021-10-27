@@ -52,7 +52,7 @@ class CommentController extends BaseController {
      */
     public function editComment(Request $request, $comment_id) {
         /**
-        * Validate request data before new comment creation
+        * Validate request data before new comment edit
         */
         $this->validate($request, ['content' => 'required']);
 
