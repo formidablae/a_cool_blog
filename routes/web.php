@@ -17,24 +17,37 @@ use App\Http\Controllers\CommentController;
 |
 */
 
+/**
+ * Posts endpoints
+ */
+$router->get('/posts', PostController::class . '@getAllPosts');  // required endpoint
+$router->get('/posts/{post_id}', PostController::class . '@getPost');  // required endpoint
+$router->post('/posts', PostController::class . '@newPost');  // required endpoint
+$router->put('/posts/{post_id}', PostController::class . '@editPost');  // required endpoint
+$router->delete('/posts/{post_id}', PostController::class . '@deletePost');  // required endpoint
+$router->get('/users/{user_id}/posts', PostController::class . '@getAllPostsOfAUser');
+$router->delete('/users/{user_id}/posts', PostController::class . '@deleteAllPostsOfAUser');
+
+/**
+ * Comments endpoints
+ */
+$router->get('/posts/{post_id}/comments', CommentController::class . '@getAllCommentsOfAPost');  // required endpoint
+$router->get('/comments/{comment_id}', CommentController::class . '@getComment');  // required endpoint
+$router->post('/comments', CommentController::class . '@newComment');  // required endpoint
+$router->put('/comments/{comment_id}', CommentController::class . '@editComment');  // required endpoint
+$router->delete('/comments/{comment_id}', CommentController::class . '@deleteComment');  // required endpoint
+$router->get('/users/{user_id}/comments', CommentController::class . '@getAllCommentsOfAUser');
+$router->delete('/user/{user_id}/comments', CommentController::class . '@deleteAllCommentsOfAUser');
+//$router->get('/comments', CommentController::class . '@getAllComments');
+$router->delete('/posts/{post_id}/comments', CommentController::class . '@deleteAllCommentsOfAPost');
+
+
+/**
+ * Users endpoints
+ */
+$router->post('/auth/register', UserController::class . '@newUser');  // required endpoint
+$router->post('/auth/login', UserController::class . '@loginUser');  // required endpoint
 $router->get('/users', UserController::class . '@getAllUsers');
-$router->get('/user/{id}', UserController::class . '@getUser');
-$router->post('/user/new', UserController::class . '@newUser');
-$router->delete('/user/{id}/delete', UserController::class . '@deleteUser');
-$router->get('/user/{user_id}/posts', PostController::class . '@getAllPostsOfAUser');
-$router->get('/user/{user_id}/comments', PostController::class . '@getAllCommentsOfAUser');
-
-$router->get('/posts', PostController::class . '@getAllPosts');
-$router->get('/post/{id}', PostController::class . '@getPost');
-$router->post('/post/{user_id}/new', PostController::class . '@newPost');
-$router->post('/post/{post_id}/edit', PostController::class . '@editPost');
-$router->delete('/post/{post_id}/delete', PostController::class . '@deletePost');
-$router->delete('/posts/{user_id}/delete', PostController::class . '@deleteAllPostsOfAUser');
-
-$router->get('/comments', CommentController::class . '@getAllComments');
-$router->get('/comment/{id}', CommentController::class . '@getComment');
-$router->post('/comment/{user_id}/{post_id}/new', PostController::class . '@newComment');
-$router->post('/comment/{comment_id}/new', CommentController::class . '@editComment');
-$router->delete('/comment/{comment_id}/delete', CommentController::class . '@deleteComment');
-$router->delete('/comments/{post_id}/delete', CommentController::class . '@deleteAllCommentsOfAPost');
-$router->delete('/comments/{user_id}/delete', CommentController::class . '@deleteAllCommentsOfAUser');
+$router->get('/users/{user_id}', UserController::class . '@getUser');
+$router->put('/users/{user_id}', UserController::class . '@editUser');
+$router->delete('/users/{user_id}', UserController::class . '@deleteUser');

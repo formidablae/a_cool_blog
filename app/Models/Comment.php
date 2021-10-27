@@ -34,8 +34,12 @@ class Comment extends Model {
     protected $guarded = [
         'id', 'user_id', 'created_at', 'post_id'
     ];
-
+    
+    /**
+     * other attributes
+     */
     protected $table = 'comments';
+    protected $with = 'user';
 
     /**
      * relationships

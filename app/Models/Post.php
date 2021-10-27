@@ -9,7 +9,7 @@ class Post extends Model {
     use HasFactory;
 
     /**
-     * The attributes that are mass assignable.
+     * attributes that are mass assignable.
      *
      * @var array
      */
@@ -18,7 +18,7 @@ class Post extends Model {
     ];
 
     /**
-     * The attributes excluded from the model's JSON form.
+     * attributes excluded from the model's JSON form.
      *
      * @var array
      */
@@ -27,7 +27,7 @@ class Post extends Model {
     ];
 
     /**
-     * The attributes that are not mass-assignable.
+     * attributes that are not mass-assignable.
      * 
      * @var array
      */
@@ -35,7 +35,12 @@ class Post extends Model {
         'id', 'user_id', 'created_at'
     ];
 
+    /**
+     * other attributes
+     */
     protected $table = 'posts';
+    protected $with = 'user';  // attributes of the user that created the post
+    protected $withCount = 'comments';  // number of comments in the post
 
     /**
      * relationships

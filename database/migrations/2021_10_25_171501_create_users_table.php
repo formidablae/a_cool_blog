@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('last_name')->nullable();  // user's last name column, null by default
             $table->string('email');  // column for email address. todo: validate the address is a valid one.
             $table->string('password');  //  column for password. todo: make it hashed using the Hash facade from Lumen
-            $table->string('api_token', 64);  // column for API token string. todo: make it randomly generated
+            $table->string('api_token', 64);  // column for API token string.
             $table->string('picture')->nullable();  // creates a column that will contain a picture URL, null by default
             $table->enum('subscription', ['free', 'premium'])->default('free');  // generates a subscription column of type enumeration free or premium, by default free
             $table->timestamps();  // generates created_at and updated_at columns
