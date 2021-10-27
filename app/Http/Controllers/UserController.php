@@ -13,8 +13,8 @@ class UserController extends BaseController {
     /**
      * getter of a user given its id
      */
-    public function getUser($id) {
-        return User::findOrFail($id);
+    public function getUser($user_id) {
+        return User::findOrFail($user_id);
     }
 
     /**
@@ -28,6 +28,17 @@ class UserController extends BaseController {
      * create a new user
      */
     public function newUser(Request $request) {
+        /**
+         * Validate request data before new user creation
+         */
+        $this->validate($request, [
+            'first_name' => 'filled|string',
+            'last_name' => 'filled|string',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string',
+            'picture' => 'filled'
+        ]);
+
         $user = new User;
         $data = $request->all();
         $user->fill($data);
@@ -40,7 +51,7 @@ class UserController extends BaseController {
     /**
      * delete a user given its id
      */
-    public function deleteUser($id) {
-        User::where('id', $id)->delete();
+    public function deleteUser($user_id) {
+        User::where('id', $user_id)->delete();
     }
 }

@@ -37,6 +37,11 @@ class PostController extends BaseController {
      * required
      */
     public function newPost(Request $request) {
+        /**
+        * Validate request data before new post creation
+        */
+        $this->validate($request, ['title' => 'required', 'content' => 'required']);
+
         $post = new Post;
         $data = $request->all();
         $post->fill($data);
@@ -51,6 +56,11 @@ class PostController extends BaseController {
      * required
      */
     public function editPost(Request $request, $post_id) {
+        /**
+        * Validate request data before post edit
+        */
+        $this->validate($request, ['title' => 'required', 'content' => 'required']);
+
         $post = $this->getPost($post_id);
         $post->fill($request->all());
         $post->save();
