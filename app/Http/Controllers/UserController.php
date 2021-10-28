@@ -35,8 +35,8 @@ class UserController extends BaseController {
             'first_name' => 'filled|string',
             'last_name' => 'filled|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string',
-            'picture' => 'filled'
+            'password' => 'required|string|min:8|max:30',
+            'picture' => 'filled|url'
         ]);
 
         $user = new User;

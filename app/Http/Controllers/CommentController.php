@@ -52,9 +52,9 @@ class CommentController extends BaseController {
      */
     public function editComment(Request $request, $comment_id) {
         /**
-        * Validate request data before new comment edit
+        * Validate request data before comment edit
         */
-        $this->validate($request, ['content' => 'required']);
+        $this->validate($request, ['content' => 'filled']);
 
         $comment = $this->getComment($comment_id);
         $comment->fill($request->all());

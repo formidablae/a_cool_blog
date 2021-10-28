@@ -59,7 +59,7 @@ class PostController extends BaseController {
         /**
         * Validate request data before post edit
         */
-        $this->validate($request, ['title' => 'required', 'content' => 'required']);
+        $this->validate($request, ['title' => 'filled', 'content' => 'filled']);
 
         $post = $this->getPost($post_id);
         $post->fill($request->all());
