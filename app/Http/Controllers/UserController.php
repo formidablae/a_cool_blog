@@ -52,6 +52,7 @@ class UserController extends BaseController {
      * delete a user given its id
      */
     public function deleteUser($user_id) {
+        User::findOrFail($user_id);  // TODO: to remove when auth implemented
         User::where('id', $user_id)->delete();
     }
 }

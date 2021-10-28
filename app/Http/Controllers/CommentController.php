@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comment;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -13,6 +15,7 @@ class CommentController extends BaseController {
      * required
      */
     public function getAllCommentsOfAPost($post_id) {
+        Post::findOrFail($post_id);
         return Comment::where('post_id', $post_id)->get();
     }
 
@@ -36,11 +39,13 @@ class CommentController extends BaseController {
         */
         $this->validate($request, ['content' => 'required']);
 
-        $comment = new Comment;
         $data = $request->all();
+        Post::findOrFail($data["post_id"]);
+        
+        $comment = new Comment;
         $comment->fill($data);
         $comment->post_id = $data["post_id"];
-        if (!isset($comment->user_id)) $comment->user_id = 1;  // to be removed with authentication implementation
+        if (!isset($comment->user_id)) $comment->user_id = 1;  // TODO: to be removed with authentication implementation
         $comment->save();
         return $comment;
     }
@@ -84,6 +89,7 @@ class CommentController extends BaseController {
      * getter of all comments of a given user
      */
     public function getAllCommentsOfAUser($user_id) {
+        User::findOrFail($user_id);  // TODO: to remove when auth implemented
         return Comment::where('user_id', $user_id)->get();
     }
 
@@ -91,6 +97,7 @@ class CommentController extends BaseController {
      * delete all comments of a given post
      */
     public function deleteAllCommentsOfAPost($post_id) {
+        Post::findOrFail($post_id);
         Comment::where('post_id', $post_id)->delete();
     }
 
@@ -98,6 +105,7 @@ class CommentController extends BaseController {
      * delete all comments of a given user
      */
     public function deleteAllCommentsOfAUser($user_id) {
+        User::findOrFail($user_id);  // TODO: to remove when auth implemented
         Comment::where('user_id', $user_id)->delete();
     }
 }

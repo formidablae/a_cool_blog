@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -24,10 +25,11 @@ class PostController extends BaseController {
      * 
      * required
      */
-    public function getPost($post_id, $comments=1) {
-        $post = Post::findOrFail($post_id);
-        if ($comments) return $post;
-        unset($post->comments_count);
+    public function getPost(Request $request, $post_id) {
+        $data = $request->all();
+        $post = Post::when($data['comments'] == 1, function ($query) {
+            $query->with('comments');
+        })->findOrFail($post_id);
         return $post;
     }
 
@@ -45,7 +47,7 @@ class PostController extends BaseController {
         $post = new Post;
         $data = $request->all();
         $post->fill($data);
-        if (!isset($post->user_id)) $post->user_id = 1;  // to be removed with authentication implementation
+        if (!isset($post->user_id)) $post->user_id = 1;  // TODO: to be removed with authentication implementation
         $post->save();
         return $post;
     }
@@ -61,7 +63,7 @@ class PostController extends BaseController {
         */
         $this->validate($request, ['title' => 'filled', 'content' => 'filled']);
 
-        $post = $this->getPost($post_id);
+        $post = Post::findOrFail($post_id);
         $post->fill($request->all());
         $post->save();
         return $post;
@@ -73,7 +75,7 @@ class PostController extends BaseController {
     * required
     */
    public function deletePost($post_id) {
-       $post = $this->getPost($post_id);
+       $post = Post::findOrFail($post_id);
        $post->delete();
        return [];
    }
@@ -82,6 +84,7 @@ class PostController extends BaseController {
      * getter of all posts of a given user
      */
     public function getAllPostsOfAUser($user_id) {
+        User::findOrFail($user_id);  // TODO: to remove when auth implemented
         return Post::where('user_id', $user_id)->get();
     }
 
@@ -89,6 +92,7 @@ class PostController extends BaseController {
      * delete all posts of a given user
      */
     public function deleteAllPostsOfAUser($user_id) {
+        User::findOrFail($user_id);  // TODO: to remove when auth implemented
         Post::where('user_id', $user_id)->delete();
     }
 }
