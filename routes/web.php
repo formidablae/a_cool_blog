@@ -38,9 +38,8 @@ $router->group(['prefix' => 'comments'], function () use ($router) {
     $router->post('', CommentController::class . '@newComment');  // required endpoint
     $router->put('/{comment_id}', CommentController::class . '@editComment');  // required endpoint
     $router->delete('/{comment_id}', CommentController::class . '@deleteComment');  // required endpoint
-    $router->get('', CommentController::class . '@getAllComments');
+    $router->get('', CommentController::class . '@getAllCommentsOfAPost');  // required endpoint
 });
-$router->get('/posts/{post_id}/comments', CommentController::class . '@getAllCommentsOfAPost');  // required endpoint
 $router->get('/users/{user_id}/comments', CommentController::class . '@getAllCommentsOfAUser');
 $router->delete('/user/{user_id}/comments', CommentController::class . '@deleteAllCommentsOfAUser');
 $router->delete('/posts/{post_id}/comments', CommentController::class . '@deleteAllCommentsOfAPost');

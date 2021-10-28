@@ -11,12 +11,17 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 class CommentController extends BaseController {
     /**
      * getter of all comments of a given post
+     * or if no post_id given, return all comments of all posts
      * 
      * required
      */
-    public function getAllCommentsOfAPost($post_id) {
-        Post::findOrFail($post_id);
-        return Comment::where('post_id', $post_id)->get();
+    public function getAllCommentsOfAPost(Request $request) {
+        $data = $request->all();
+        $comments = Comment::when(isset($data['post_id']), function ($query) use ($data) {
+            Post::findOrFail($data['post_id']);
+            $query->where('post_id', $data['post_id']);
+        })->get();
+        return $comments;
     }
 
     /**
@@ -41,7 +46,7 @@ class CommentController extends BaseController {
 
         $data = $request->all();
         Post::findOrFail($data["post_id"]);
-        
+
         $comment = new Comment;
         $comment->fill($data);
         $comment->post_id = $data["post_id"];
@@ -77,13 +82,6 @@ class CommentController extends BaseController {
         $comment->delete();
         return [];
     }
-
-    /**
-    * getter of all comments
-    */
-   public function getAllComments() {
-       return Comment::all();
-   }
 
     /**
      * getter of all comments of a given user
