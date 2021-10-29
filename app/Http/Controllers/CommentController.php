@@ -85,7 +85,7 @@ class CommentController extends BaseController {
             return response("Unauthorized action. Cannot edit another user's comment.", 401);
         }
 
-        return response("Unauthorized action, only premium user can edit comments.", 401);
+        return response("Unauthorized action, only premium users can edit comments.", 401);
     }
 
     /**
@@ -107,13 +107,13 @@ class CommentController extends BaseController {
             return response("Unauthorized action. Cannot delete another user's comment.", 401);
         }
 
-        return response("Unauthorized action, only premium user can delete comments.", 401);
+        return response("Unauthorized action, only premium users can delete comments.", 401);
     }
 
     /**
      * getter of all comments of a given user
      */
-    public function getAllCommentsOfAUser($user_id) {  // user has to be premium to edit their comments
+    public function getAllCommentsOfAUser($user_id) {
         User::findOrFail($user_id);
         return Comment::where('user_id', $user_id)->get();
     }
@@ -128,7 +128,7 @@ class CommentController extends BaseController {
             Comment::where('post_id', $post_id)->where('user_id', $user->id)->delete();
         }
 
-        return response("Unauthorized action, only premium user can delete their comments.", 401);
+        return response("Unauthorized action, only premium users can delete their comments.", 401);
     }
 
     /**
@@ -140,6 +140,6 @@ class CommentController extends BaseController {
             Comment::where('user_id', $user->id)->delete();
         }
 
-        return response("Unauthorized action, only premium user can delete their comments.", 401);
+        return response("Unauthorized action, only premium users can delete their comments.", 401);
     }
 }
