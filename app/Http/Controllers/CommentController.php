@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Traits\CommentTrait;
+use App\Http\Traits\UserIdTrait;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class CommentController extends BaseController {
-    use CommentTrait;
-
     /**
      * getter of all comments of a given post
      * or if no post_id given, return all comments of all posts
@@ -48,7 +46,7 @@ class CommentController extends BaseController {
         */
         $this->validate($request, ['content' => 'required']);
 
-        $user = Auth::user();
+        Auth::user();
         $data = $request->all();
         $post = Post::findOrFail($data["post_id"]);
 
@@ -56,7 +54,7 @@ class CommentController extends BaseController {
             $comment = new Comment;
             $comment->fill($data);
             $comment->post_id = $post->id;
-            $comment->user_id = $user->id;
+            //$comment->user_id = Auth::user()->id;
             $comment->save();
             return $comment;
         }

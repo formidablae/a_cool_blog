@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Traits\PostTrait;
+use App\Http\Traits\UserIdTrait;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class PostController extends BaseController {
-    use PostTrait;
-
     /**
      * getter of all posts
      * 
@@ -48,12 +46,11 @@ class PostController extends BaseController {
         */
         $this->validate($request, ['title' => 'required', 'content' => 'required']);
         
-        $user = Auth::user();
+        Auth::user();
 
         $post = new Post;
         $data = $request->all();
         $post->fill($data);
-        $post->user_id = $user->id;
         $post->save();
         return $post;
     }
@@ -69,11 +66,9 @@ class PostController extends BaseController {
         */
         $this->validate($request, ['title' => 'filled', 'content' => 'filled']);
 
-        $user = Auth::user();
-
         $post = Post::findOrFail($post_id);
 
-        if ($post->user_id == $user->id) {
+        if ($post->user_id == Auth::user()->id) {
             $post->fill($request->all());
             $post->save();
             return $post;

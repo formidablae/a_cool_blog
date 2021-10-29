@@ -47,17 +47,17 @@ $router->group(['prefix' => 'comments'], function () use ($router) {
      */
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->post('', CommentController::class . '@newComment');  // required endpoint
-        $router->put('/{comment_id}', CommentController::class . '@editComment');  // required endpoint
-        $router->delete('/{comment_id}', CommentController::class . '@deleteComment');  // required endpoint
-        $router->delete('/comments', CommentController::class . '@deleteAllCommentsOfAUser');
+        $router->put('{comment_id}', CommentController::class . '@editComment');  // required endpoint
+        $router->delete('{comment_id}', CommentController::class . '@deleteComment');  // required endpoint
+        $router->delete('', CommentController::class . '@deleteAllCommentsOfAUser');
     });
 
     /**
      * endpoints not requiring authorization
      */
-    $router->get('/{comment_id}', CommentController::class . '@getComment');  // required endpoint
+    $router->get('{comment_id}', CommentController::class . '@getComment');  // required endpoint
     $router->get('', CommentController::class . '@getAllCommentsOfAPost');  // required endpoint
-    $router->get('/{user_id}/comments', CommentController::class . '@getAllCommentsOfAUser');
+    $router->get('{user_id}/comments', CommentController::class . '@getAllCommentsOfAUser');
 });
 
 /**
@@ -70,15 +70,15 @@ $router->group(['prefix' => 'users'], function () use ($router) {
      * endpoints requiring authorization
      */
     $router->group(['middleware' => 'auth'], function () use ($router) {
-        $router->put('/{user_id}', UserController::class . '@editUser');
+        $router->put('{user_id}', UserController::class . '@editUser');
         $router->delete('', UserController::class . '@deleteUser');
-        $router->delete('/posts', PostController::class . '@deleteAllPostsOfAUser');
+        $router->delete('posts', PostController::class . '@deleteAllPostsOfAUser');
     });
 
     /**
     * endpoints not requiring authorization
     */
     $router->get('', UserController::class . '@getAllUsers');
-    $router->get('/{user_id}', UserController::class . '@getUser');
-    $router->get('/{user_id}/posts', PostController::class . '@getAllPostsOfAUser');
+    $router->get('{user_id}', UserController::class . '@getUser');
+    $router->get('{user_id}/posts', PostController::class . '@getAllPostsOfAUser');
 });

@@ -8,12 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Lumen\Routing\Controller as BaseController;
-use Stringable;
-use App\Http\Traits\UserTrait;
 
 class UserController extends BaseController {
-    use UserTrait;
-
     /**
      * getter of a user given its id
      */
