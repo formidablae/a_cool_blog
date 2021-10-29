@@ -57,7 +57,7 @@ class UserController extends BaseController {
         /**
          * Validate request data before login of a user
          */
-        $this->validate($request, ['email' => 'required|email|unique:users', 'password' => 'required|string|min:8|max:30']);
+        $this->validate($request, ['email' => 'required|email', 'password' => 'required|string']);
         
         $data = $request->all();
         $user = User::where('email', $data['email'])->first();

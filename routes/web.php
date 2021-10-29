@@ -20,7 +20,7 @@ use App\Http\Controllers\CommentController;
 /**
  * Posts endpoints
  */
-$router->group(['prefix' => 'posts'], function () use ($router) {
+$router->group(['prefix' => 'posts', 'middleware' => 'auth'], function () use ($router) { // TODO: reorganize auth application, remove from not needed
     $router->get('', PostController::class . '@getAllPosts');  // required endpoint
     $router->get('/{post_id}', PostController::class . '@getPost');  // required endpoint
     $router->post('', PostController::class . '@newPost');  // required endpoint
@@ -33,7 +33,7 @@ $router->delete('/users/posts', PostController::class . '@deleteAllPostsOfAUser'
 /**
  * Comments endpoints
  */
-$router->group(['prefix' => 'comments'], function () use ($router) {
+$router->group(['prefix' => 'comments', 'middleware' => 'auth'], function () use ($router) {  // TODO: reorganize auth application, remove from not needed
     $router->get('/{comment_id}', CommentController::class . '@getComment');  // required endpoint
     $router->post('', CommentController::class . '@newComment');  // required endpoint
     $router->put('/{comment_id}', CommentController::class . '@editComment');  // required endpoint
@@ -41,7 +41,7 @@ $router->group(['prefix' => 'comments'], function () use ($router) {
     $router->get('', CommentController::class . '@getAllCommentsOfAPost');  // required endpoint
 });
 $router->get('/users/{user_id}/comments', CommentController::class . '@getAllCommentsOfAUser');
-$router->delete('/user/comments', CommentController::class . '@deleteAllCommentsOfAUser');
+$router->delete('/user/comments', ['middleware' => 'auth', 'uses' => CommentController::class . '@deleteAllCommentsOfAUser']);
 $router->delete('/posts/{post_id}/comments', CommentController::class . '@deleteAllCommentsOfAPost');
 
 
@@ -50,9 +50,11 @@ $router->delete('/posts/{post_id}/comments', CommentController::class . '@delete
  */
 $router->post('/auth/register', UserController::class . '@newUser');  // required endpoint
 $router->post('/auth/login', UserController::class . '@loginUser');  // required endpoint
-$router->group(['prefix' => 'users'], function () use ($router) {
+$router->group(['prefix' => 'users', 'middleware' => 'auth'], function () use ($router) { // TODO: reorganize auth application, remove from not needed
     $router->get('', UserController::class . '@getAllUsers');
     $router->get('/{user_id}', UserController::class . '@getUser');
     $router->put('/{user_id}', UserController::class . '@editUser');
     $router->delete('', UserController::class . '@deleteUser');
 });
+
+// TOTO: create subgroups for auth needing routes
