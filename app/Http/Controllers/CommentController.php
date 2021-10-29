@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\CommentTrait;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class CommentController extends BaseController {
+    use CommentTrait;
+
     /**
      * getter of all comments of a given post
      * or if no post_id given, return all comments of all posts
