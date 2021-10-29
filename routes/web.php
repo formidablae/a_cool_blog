@@ -28,7 +28,7 @@ $router->group(['prefix' => 'posts'], function () use ($router) {
     $router->delete('/{post_id}', PostController::class . '@deletePost');  // required endpoint
 });
 $router->get('/users/{user_id}/posts', PostController::class . '@getAllPostsOfAUser');
-$router->delete('/users/{user_id}/posts', PostController::class . '@deleteAllPostsOfAUser');
+$router->delete('/users/posts', PostController::class . '@deleteAllPostsOfAUser');
 
 /**
  * Comments endpoints
@@ -41,7 +41,7 @@ $router->group(['prefix' => 'comments'], function () use ($router) {
     $router->get('', CommentController::class . '@getAllCommentsOfAPost');  // required endpoint
 });
 $router->get('/users/{user_id}/comments', CommentController::class . '@getAllCommentsOfAUser');
-$router->delete('/user/{user_id}/comments', CommentController::class . '@deleteAllCommentsOfAUser');
+$router->delete('/user/comments', CommentController::class . '@deleteAllCommentsOfAUser');
 $router->delete('/posts/{post_id}/comments', CommentController::class . '@deleteAllCommentsOfAPost');
 
 
@@ -54,5 +54,5 @@ $router->group(['prefix' => 'users'], function () use ($router) {
     $router->get('', UserController::class . '@getAllUsers');
     $router->get('/{user_id}', UserController::class . '@getUser');
     $router->put('/{user_id}', UserController::class . '@editUser');
-    $router->delete('/{user_id}', UserController::class . '@deleteUser');
+    $router->delete('', UserController::class . '@deleteUser');
 });

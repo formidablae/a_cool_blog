@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class CommentController extends BaseController {
@@ -44,15 +45,19 @@ class CommentController extends BaseController {
         */
         $this->validate($request, ['content' => 'required']);
 
+        $user = Auth::user();
         $data = $request->all();
-        Post::findOrFail($data["post_id"]);
+        $post = Post::findOrFail($data["post_id"]);
 
-        $comment = new Comment;
-        $comment->fill($data);
-        $comment->post_id = $data["post_id"];
-        if (!isset($comment->user_id)) $comment->user_id = 1;  // TODO: to be removed with authentication implementation
-        $comment->save();
-        return $comment;
+        if ($post) {
+            $comment = new Comment;
+            $comment->fill($data);
+            $comment->post_id = $post->id;
+            $comment->user_id = $user->id;
+            $comment->save();
+            return $comment;
+        }
+        return response("Post doesn't exist", 404);
     }
 
     /**
@@ -66,10 +71,17 @@ class CommentController extends BaseController {
         */
         $this->validate($request, ['content' => 'filled']);
 
+        $user = Auth::user();
+
         $comment = $this->getComment($comment_id);
-        $comment->fill($request->all());
-        $comment->save();
-        return $comment;
+
+        if ($user->id == $comment->user_id) {
+            $comment->fill($request->all());
+            $comment->save();
+            return $comment;
+        }
+
+        return response("Unauthorized to edit the comment", 401);
     }
 
     /**
@@ -78,9 +90,16 @@ class CommentController extends BaseController {
      * required
      */
     public function deleteComment($comment_id) {
+        $user = Auth::user();
+
         $comment = $this->getComment($comment_id);
-        $comment->delete();
-        return [];
+
+        if ($user->id == $comment->user_id) {
+            $comment->delete();
+            return [];
+        }
+
+        return response("Unauthorized to delete the comment", 401);
     }
 
     /**
@@ -95,15 +114,16 @@ class CommentController extends BaseController {
      * delete all comments of a given post
      */
     public function deleteAllCommentsOfAPost($post_id) {
+        $user = Auth::user();
         Post::findOrFail($post_id);
-        Comment::where('post_id', $post_id)->delete();
+        Comment::where('post_id', $post_id)->where('user_id', $user->id)->delete();
     }
 
     /**
      * delete all comments of a given user
      */
-    public function deleteAllCommentsOfAUser($user_id) {
-        User::findOrFail($user_id);  // TODO: to remove when auth implemented
-        Comment::where('user_id', $user_id)->delete();
+    public function deleteAllCommentsOfAUser() {
+        $user = Auth::user();
+        Comment::where('user_id', $user->id)->delete();
     }
 }

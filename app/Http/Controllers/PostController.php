@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class PostController extends BaseController {
@@ -43,11 +44,13 @@ class PostController extends BaseController {
         * Validate request data before new post creation
         */
         $this->validate($request, ['title' => 'required', 'content' => 'required']);
+        
+        $user = Auth::user();
 
         $post = new Post;
         $data = $request->all();
         $post->fill($data);
-        if (!isset($post->user_id)) $post->user_id = 1;  // TODO: to be removed with authentication implementation
+        $post->user_id = $user->id;
         $post->save();
         return $post;
     }
@@ -63,10 +66,17 @@ class PostController extends BaseController {
         */
         $this->validate($request, ['title' => 'filled', 'content' => 'filled']);
 
+        $user = Auth::user();
+
         $post = Post::findOrFail($post_id);
-        $post->fill($request->all());
-        $post->save();
-        return $post;
+
+        if ($post->user_id == $user->id) {
+            $post->fill($request->all());
+            $post->save();
+            return $post;
+        }
+
+        return response("Unauthorized to edit the post", 401);
     }
     
     /**
@@ -75,9 +85,15 @@ class PostController extends BaseController {
     * required
     */
    public function deletePost($post_id) {
-       $post = Post::findOrFail($post_id);
-       $post->delete();
-       return [];
+        $user = Auth::user();
+        $post = Post::findOrFail($post_id);
+        
+        if ($post->user_id == $user->id) {
+            $post->delete();
+            return [];
+        }
+
+        return response("Unauthorized to delete the post", 401);
    }
 
     /**
@@ -91,8 +107,8 @@ class PostController extends BaseController {
     /**
      * delete all posts of a given user
      */
-    public function deleteAllPostsOfAUser($user_id) {
-        User::findOrFail($user_id);  // TODO: to remove when auth implemented
-        Post::where('user_id', $user_id)->delete();
+    public function deleteAllPostsOfAUser() {
+        $user = Auth::user();
+        Post::where('user_id', $user->id)->delete();
     }
 }

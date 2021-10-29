@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -48,11 +49,34 @@ class UserController extends BaseController {
         return $user;
     }
 
+
+    /**
+     * login a user
+     */
+    public function loginUser(Request $request) {
+        /**
+         * Validate request data before login of a user
+         */
+        $this->validate($request, ['email' => 'required|email|unique:users', 'password' => 'required|string|min:8|max:30']);
+        
+        $data = $request->all();
+        $user = User::where('email', $data['email'])->first();
+        if ($user) {
+            if (Hash::check($data['password'], $user->password)) {
+                return $user->api_token;  // successfull login
+            }
+
+            return response("Password not correct", 401);  // wrong password
+        }
+        
+        return response("Email address not found", 404);  // user does not exist
+    }
+
     /**
      * delete a user given its id
      */
-    public function deleteUser($user_id) {
-        User::findOrFail($user_id);  // TODO: to remove when auth implemented
-        User::where('id', $user_id)->delete();
+    public function deleteUser() {
+        $user = Auth::user();
+        User::where('id', $user->id)->delete();
     }
 }
