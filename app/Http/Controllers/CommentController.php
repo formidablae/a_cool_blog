@@ -73,15 +73,19 @@ class CommentController extends BaseController {
 
         $user = Auth::user();
 
-        $comment = $this->getComment($comment_id);
+        if ($user->subscription === "premium") {  // user has to be premium to edit their comments
+            $comment = $this->getComment($comment_id);
 
-        if ($user->id == $comment->user_id) {
-            $comment->fill($request->all());
-            $comment->save();
-            return $comment;
+            if ($user->id === $comment->user_id) {
+                $comment->fill($request->all());
+                $comment->save();
+                return $comment;
+            }
+
+            return response("Unauthorized action. Cannot edit another user's comment.", 401);
         }
 
-        return response("Unauthorized to edit the comment", 401);
+        return response("Unauthorized action, only premium user can edit comments.", 401);
     }
 
     /**
@@ -92,21 +96,25 @@ class CommentController extends BaseController {
     public function deleteComment($comment_id) {
         $user = Auth::user();
 
-        $comment = $this->getComment($comment_id);
+        if ($user->subscription === "premium") {  // user has to be premium to edit their comments
+            $comment = $this->getComment($comment_id);
 
-        if ($user->id == $comment->user_id) {
-            $comment->delete();
-            return [];
+            if ($user->id === $comment->user_id) {
+                $comment->delete();
+                return [];
+            }
+
+            return response("Unauthorized action. Cannot delete another user's comment.", 401);
         }
 
-        return response("Unauthorized to delete the comment", 401);
+        return response("Unauthorized action, only premium user can delete comments.", 401);
     }
 
     /**
      * getter of all comments of a given user
      */
-    public function getAllCommentsOfAUser($user_id) {
-        User::findOrFail($user_id);  // TODO: to remove when auth implemented
+    public function getAllCommentsOfAUser($user_id) {  // user has to be premium to edit their comments
+        User::findOrFail($user_id);
         return Comment::where('user_id', $user_id)->get();
     }
 
@@ -115,8 +123,12 @@ class CommentController extends BaseController {
      */
     public function deleteAllCommentsOfAPost($post_id) {
         $user = Auth::user();
-        Post::findOrFail($post_id);
-        Comment::where('post_id', $post_id)->where('user_id', $user->id)->delete();
+        if ($user->subscription === "premium") {  // user has to be premium to edit their comments
+            Post::findOrFail($post_id);
+            Comment::where('post_id', $post_id)->where('user_id', $user->id)->delete();
+        }
+
+        return response("Unauthorized action, only premium user can delete their comments.", 401);
     }
 
     /**
@@ -124,6 +136,10 @@ class CommentController extends BaseController {
      */
     public function deleteAllCommentsOfAUser() {
         $user = Auth::user();
-        Comment::where('user_id', $user->id)->delete();
+        if ($user->subscription === "premium") {  // user has to be premium to edit their comments
+            Comment::where('user_id', $user->id)->delete();
+        }
+
+        return response("Unauthorized action, only premium user can delete their comments.", 401);
     }
 }

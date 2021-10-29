@@ -20,41 +20,65 @@ use App\Http\Controllers\CommentController;
 /**
  * Posts endpoints
  */
-$router->group(['prefix' => 'posts', 'middleware' => 'auth'], function () use ($router) { // TODO: reorganize auth application, remove from not needed
+$router->group(['prefix' => 'posts'], function () use ($router) {
+    /**
+     * endpoints requiring authorization
+     */
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->post('', PostController::class . '@newPost');  // required endpoint
+        $router->put('/{post_id}', PostController::class . '@editPost');  // required endpoint
+        $router->delete('/{post_id}', PostController::class . '@deletePost');  // required endpoint
+        $router->delete('/{post_id}/comments', CommentController::class . '@deleteAllCommentsOfAPost');
+    });
+
+    /**
+     * endpoints not requiring authorization
+     */
     $router->get('', PostController::class . '@getAllPosts');  // required endpoint
     $router->get('/{post_id}', PostController::class . '@getPost');  // required endpoint
-    $router->post('', PostController::class . '@newPost');  // required endpoint
-    $router->put('/{post_id}', PostController::class . '@editPost');  // required endpoint
-    $router->delete('/{post_id}', PostController::class . '@deletePost');  // required endpoint
 });
-$router->get('/users/{user_id}/posts', PostController::class . '@getAllPostsOfAUser');
-$router->delete('/users/posts', PostController::class . '@deleteAllPostsOfAUser');
 
 /**
  * Comments endpoints
  */
-$router->group(['prefix' => 'comments', 'middleware' => 'auth'], function () use ($router) {  // TODO: reorganize auth application, remove from not needed
-    $router->get('/{comment_id}', CommentController::class . '@getComment');  // required endpoint
-    $router->post('', CommentController::class . '@newComment');  // required endpoint
-    $router->put('/{comment_id}', CommentController::class . '@editComment');  // required endpoint
-    $router->delete('/{comment_id}', CommentController::class . '@deleteComment');  // required endpoint
-    $router->get('', CommentController::class . '@getAllCommentsOfAPost');  // required endpoint
-});
-$router->get('/users/{user_id}/comments', CommentController::class . '@getAllCommentsOfAUser');
-$router->delete('/user/comments', ['middleware' => 'auth', 'uses' => CommentController::class . '@deleteAllCommentsOfAUser']);
-$router->delete('/posts/{post_id}/comments', CommentController::class . '@deleteAllCommentsOfAPost');
+$router->group(['prefix' => 'comments'], function () use ($router) {
+    /**
+     * endpoints requiring authorization
+     */
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->post('', CommentController::class . '@newComment');  // required endpoint
+        $router->put('/{comment_id}', CommentController::class . '@editComment');  // required endpoint
+        $router->delete('/{comment_id}', CommentController::class . '@deleteComment');  // required endpoint
+        $router->delete('/comments', CommentController::class . '@deleteAllCommentsOfAUser');
+    });
 
+    /**
+     * endpoints not requiring authorization
+     */
+    $router->get('/{comment_id}', CommentController::class . '@getComment');  // required endpoint
+    $router->get('', CommentController::class . '@getAllCommentsOfAPost');  // required endpoint
+    $router->get('/{user_id}/comments', CommentController::class . '@getAllCommentsOfAUser');
+});
 
 /**
  * Users endpoints
  */
 $router->post('/auth/register', UserController::class . '@newUser');  // required endpoint
 $router->post('/auth/login', UserController::class . '@loginUser');  // required endpoint
-$router->group(['prefix' => 'users', 'middleware' => 'auth'], function () use ($router) { // TODO: reorganize auth application, remove from not needed
+$router->group(['prefix' => 'users'], function () use ($router) {
+    /**
+     * endpoints requiring authorization
+     */
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+        $router->put('/{user_id}', UserController::class . '@editUser');
+        $router->delete('', UserController::class . '@deleteUser');
+        $router->delete('/posts', PostController::class . '@deleteAllPostsOfAUser');
+    });
+
+    /**
+    * endpoints not requiring authorization
+    */
     $router->get('', UserController::class . '@getAllUsers');
     $router->get('/{user_id}', UserController::class . '@getUser');
-    $router->put('/{user_id}', UserController::class . '@editUser');
-    $router->delete('', UserController::class . '@deleteUser');
+    $router->get('/{user_id}/posts', PostController::class . '@getAllPostsOfAUser');
 });
-
-// TOTO: create subgroups for auth needing routes

@@ -88,7 +88,7 @@ class PostController extends BaseController {
         $user = Auth::user();
         $post = Post::findOrFail($post_id);
         
-        if ($post->user_id == $user->id) {
+        if ($post->user_id === $user->id) {
             $post->delete();
             return [];
         }
@@ -100,7 +100,7 @@ class PostController extends BaseController {
      * getter of all posts of a given user
      */
     public function getAllPostsOfAUser($user_id) {
-        User::findOrFail($user_id);  // TODO: to remove when auth implemented
+        User::findOrFail($user_id); 
         return Post::where('user_id', $user_id)->get();
     }
 
