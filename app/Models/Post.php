@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Http\Traits\UserIdTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model {
-    use HasFactory, UserIdTrait;
+    use HasFactory;
 
     /**
      * attributes that are mass assignable.

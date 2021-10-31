@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -45,7 +46,7 @@ class CommentController extends BaseController {
         */
         $this->validate($request, ['content' => 'required']);
 
-        Auth::user();
+        $user = Auth::user();
         $data = $request->all();
         $post = Post::findOrFail($data["post_id"]);
 
@@ -53,7 +54,7 @@ class CommentController extends BaseController {
             $comment = new Comment;
             $comment->fill($data);
             $comment->post_id = $post->id;
-            //$comment->user_id = Auth::user()->id;
+            $comment->user_id = $user->id;
             $comment->save();
             return $comment;
         }
@@ -73,19 +74,15 @@ class CommentController extends BaseController {
 
         $user = Auth::user();
 
-        if ($user->subscription === "premium") {  // user has to be premium to edit their comments
-            $comment = $this->getComment($comment_id);
+        Gate::authorize('isPremiumUser', $user);  // check if user has premium subscription, thus can edit own comments
 
-            if ($user->id === $comment->user_id) {
-                $comment->fill($request->all());
-                $comment->save();
-                return $comment;
-            }
+        $comment = $this->getComment($comment_id);
 
-            return response("Unauthorized action. Cannot edit another user's comment.", 401);
-        }
+        Gate::authorize('editComment', $comment);  // check if editting comment is permitted
 
-        return response("Unauthorized action, only premium users can edit comments.", 401);
+        $comment->fill($request->all());
+        $comment->save();
+        return $comment;
     }
 
     /**
@@ -96,18 +93,14 @@ class CommentController extends BaseController {
     public function deleteComment($comment_id) {
         $user = Auth::user();
 
-        if ($user->subscription === "premium") {  // user has to be premium to edit their comments
-            $comment = $this->getComment($comment_id);
+        Gate::authorize('isPremiumUser', $user);  // check if user has premium subscription, thus can delete own comments
 
-            if ($user->id === $comment->user_id) {
-                $comment->delete();
-                return [];
-            }
+        $comment = $this->getComment($comment_id);
 
-            return response("Unauthorized action. Cannot delete another user's comment.", 401);
-        }
+        Gate::authorize('deleteComment', $comment);  // check if deleting comment is permitted
 
-        return response("Unauthorized action, only premium users can delete comments.", 401);
+        $comment->delete();
+        return [];
     }
 
     /**

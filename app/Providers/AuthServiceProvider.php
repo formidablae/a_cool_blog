@@ -2,7 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Comment;
+use App\Models\Post;
 use App\Models\User;
+use App\Policies\CommentPolicy;
+use App\Policies\PostPolicy;
+use App\Policies\PremiumPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -35,5 +40,9 @@ class AuthServiceProvider extends ServiceProvider
                 return User::where('api_token', $request->header('Authorization'))->first();
             }
         });
+
+        Gate::policy(Post::class, PostPolicy::class);
+        Gate::policy(Comment::class, CommentPolicy::class);
+        Gate::policy(User::class, PremiumPolicy::class);
     }
 }

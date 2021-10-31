@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Http\Traits\UserIdTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Comment extends Model {
-    use HasFactory, UserIdTrait;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.

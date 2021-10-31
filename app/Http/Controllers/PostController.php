@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -45,11 +46,12 @@ class PostController extends BaseController {
         */
         $this->validate($request, ['title' => 'required', 'content' => 'required']);
         
-        Auth::user();
+        $user = Auth::user();
 
         $post = new Post;
         $data = $request->all();
         $post->fill($data);
+        $post->user_id = $user->id;
         $post->save();
         return $post;
     }
@@ -65,15 +67,15 @@ class PostController extends BaseController {
         */
         $this->validate($request, ['title' => 'filled', 'content' => 'filled']);
 
+        Auth::user();
+
         $post = Post::findOrFail($post_id);
 
-        if ($post->user_id == Auth::user()->id) {
-            $post->fill($request->all());
-            $post->save();
-            return $post;
-        }
+        Gate::authorize('editPost', $post);  // check if editting post is permitted
 
-        return response("Unauthorized to edit the post", 401);
+        $post->fill($request->all());
+        $post->save();
+        return $post;
     }
     
     /**
@@ -85,12 +87,10 @@ class PostController extends BaseController {
         $user = Auth::user();
         $post = Post::findOrFail($post_id);
         
-        if ($post->user_id === $user->id) {
-            $post->delete();
-            return [];
-        }
+        Gate::authorize('deletePost', $post);  // check if deleting post is permitted
 
-        return response("Unauthorized to delete the post", 401);
+        $post->delete();
+        return [];
    }
 
     /**
