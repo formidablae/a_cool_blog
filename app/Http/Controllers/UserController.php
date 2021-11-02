@@ -43,7 +43,6 @@ class UserController extends BaseController {
         $data = $request->all();
         $user->fill($data);
         $user->password = Hash::make($data["password"]);
-        $user->api_token = Str::random(64);
         $user->save();
         return $user;
     }

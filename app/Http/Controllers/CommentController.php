@@ -74,7 +74,7 @@ class CommentController extends BaseController {
 
         $user = Auth::user();
 
-        Gate::authorize('isPremiumUser', $user);  // check if user has premium subscription, thus can edit own comments
+        Gate::authorize('isPremiumUser');  // check if user has premium subscription, thus can edit own comments
 
         $comment = $this->getComment($comment_id);
 

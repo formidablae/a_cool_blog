@@ -28,7 +28,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $hidden = [
-        'password', 'updated_at', 'api_token'
+        'password', 'updated_at'
     ];
 
     /**
@@ -50,7 +50,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * obtain full name attribute
      */
     public function getFullNameAttribute(): string {
-        return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+        if (isset($this->attributes['first_name']) && isset($this->attributes['last_name'])) {
+            return $this->attributes['first_name'] . ' ' . $this->attributes['last_name'];
+        }
+        return "";
     }
 
     /**

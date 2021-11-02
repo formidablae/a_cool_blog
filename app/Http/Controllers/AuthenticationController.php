@@ -9,15 +9,6 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class AuthenticationController extends BaseController {
     /**
-     * create a new AuthenticationController instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
-
-    /**
      * login a user
      */
     public function loginUser(Request $request) {
