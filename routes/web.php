@@ -3,6 +3,7 @@
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\AuthenticationController;
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
@@ -63,11 +64,9 @@ $router->group(['prefix' => 'comments'], function () use ($router) {
 /**
  * Users endpoints
  */
-$router->post('/auth/register', UserController::class . '@newUser');  // required endpoint
-$router->post('/auth/login', UserController::class . '@loginUser');  // required endpoint
 $router->group(['prefix' => 'users'], function () use ($router) {
     /**
-     * endpoints requiring authorization
+     * endpoints requiring authentication
      */
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->put('{user_id}', UserController::class . '@editUser');
@@ -76,9 +75,20 @@ $router->group(['prefix' => 'users'], function () use ($router) {
     });
 
     /**
-    * endpoints not requiring authorization
+    * endpoints not requiring authentication
     */
     $router->get('', UserController::class . '@getAllUsers');
     $router->get('{user_id}', UserController::class . '@getUser');
     $router->get('{user_id}/posts', PostController::class . '@getAllPostsOfAUser');
+});
+
+/**
+ * Authentication endpoints
+ */
+$router->post('auth/register', UserController::class . '@newUser');  // required endpoint
+$router->group(['prefix' => 'auth'], function () use ($router) {
+    $router->post('login', AuthenticationController::class . '@loginUser');  // required endpoint
+    $router->post('logout', AuthenticationController::class . '@logoutUser');
+    $router->post('refresh', AuthenticationController::class . '@refreshToken');
+    $router->get('me', AuthenticationController::class . '@getMe');
 });

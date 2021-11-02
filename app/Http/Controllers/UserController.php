@@ -48,29 +48,6 @@ class UserController extends BaseController {
         return $user;
     }
 
-
-    /**
-     * login a user
-     */
-    public function loginUser(Request $request) {
-        /**
-         * Validate request data before login of a user
-         */
-        $this->validate($request, ['email' => 'required|email', 'password' => 'required|string']);
-        
-        $data = $request->all();
-        $user = User::where('email', $data['email'])->first();
-        if ($user) {
-            if (Hash::check($data['password'], $user->password)) {
-                return $user->api_token;  // successfull login
-            }
-
-            return response("Password not correct", 401);  // wrong password
-        }
-        
-        return response("Email address not found", 404);  // user does not exist
-    }
-
     /**
      * delete a user given its id
      */
