@@ -1,6 +1,10 @@
 # A Lumen Blog
 Your first step towards mastering [Lumen](https://lumen.laravel.com).
 
+In this project, an API of a blog is built with Lumen Framework for fast paced PHP, Laravel/Lumen learning using [github.com/fattureincloud/a-lumen-blog](https://github.com/fattureincloud/a-lumen-blog) template.
+
+It's front-end interface is here: [github.com/formidablae/AngularBlog](https://github.com/formidablae/AngularBlog) .
+
 ## Requirements
 - [Docker](https://www.docker.com/)
 
